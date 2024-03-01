@@ -1,53 +1,85 @@
-document.addEventListener('DOMContentLoaded', function () {
-  // Evento para el botón "Calcular"
-  document.getElementById('calcular').addEventListener('click', function () {
-      calcularHidratacion();
-  });
+// script.js
 
-  function calcularHidratacion() {
-      // Obtener el valor ingresado en el campo de peso
-      var peso = parseFloat(document.getElementById('peso').value);
+// Variables globales
+let intentos = 6;
+let diccionario = ['APPLE', 'HURLS', 'WINGS', 'YOUTH'];
+let palabra = "";
 
-      // Verificar si el peso es un número válido y mayor a 0
-      if (!isNaN(peso) && peso > 0) {
-          // Calcular la hidratación según el método de Holliday-Segar
-          var hidratacion = calcularHollidaySegar(peso);
+// Evento load
+window.addEventListener('load', init);
 
-          // Mostrar los resultados
-          mostrarResultados(hidratacion);
-      } else {
-          // Mostrar mensaje de error si el peso no es válido
-          document.getElementById('error').style.display = 'block';
-      }
+// Evento click
+const button = document.getElementById("guess-button");
+button.addEventListener("click", intentar);
+
+function init() {
+  // Selección de palabra aleatoria
+  palabra = diccionario[Math.floor(Math.random() * diccionario.length)];
+
+  // Inicializar la interfaz de usuario
+  renderUI();
+}
+
+function intentar() {
+  const intento = leerIntento();
+
+  if (intento === palabra) {
+    terminar("<h1>¡GANASTE! 😄</h1>");
+    return;
   }
 
-  function calcularHollidaySegar(peso) {
-      var hidratacion = 0;
+  renderIntento(intento);
 
-      if (peso <= 10) {
-          hidratacion = peso * 100;
-      } else if (peso <= 20) {
-          hidratacion = 10 * 100 + (peso - 10) * 50;
-      } else {
-          hidratacion = 10 * 100 + 10 * 50 + (peso - 20) * 20;
-      }
+  intentos--;
 
-      return hidratacion;
+  if (intentos === 0) {
+    terminar("<h1>¡PERDISTE! 😢</h1>");
+  }
+}
+
+function leerIntento() {
+  let intento = document.getElementById("guess-input").value;
+  intento = intento.toUpperCase();
+  return intento;
+}
+
+function renderIntento(intento) {
+  const grid = document.getElementById("grid");
+  const row = document.createElement('div');
+  row.className = 'row';
+
+  for (let i = 0; i < palabra.length; i++) {
+    const span = document.createElement('span');
+    span.className = 'letter';
+
+    if (intento[i] === palabra[i]) {
+      span.innerHTML = intento[i];
+      span.style.backgroundColor = '#79b851'; // Verde
+    } else if (palabra.includes(intento[i])) {
+      span.innerHTML = intento[i];
+      span.style.backgroundColor = '#f3c237'; // Amarillo
+    } else {
+      span.innerHTML = intento[i];
+      span.style.backgroundColor = '#a4aec4'; // Gris
+    }
+
+    row.appendChild(span);
   }
 
-  function mostrarResultados(hidratacion) {
-      // Mostrar la hidratación calculada
-      document.getElementById('flu').textContent = hidratacion + 'cc/día';
-      document.getElementById('flu').style.display = 'block';
+  grid.appendChild(row);
+}
 
-      // Calcular y mostrar mantenimiento y m+m/2
-      var mantenimiento = Math.round(hidratacion / 24);
-      var mmMitad = Math.round(mantenimiento * 1.5);
+function renderUI() {
+  // Puedes agregar aquí cualquier inicialización de la interfaz de usuario si es necesario.
+}
 
-      document.getElementById('man').textContent = 'Mantenimiento: ' + mantenimiento + 'cc/h | m+m/2: ' + mmMitad + 'cc/h';
-      document.getElementById('man').style.display = 'block';
+function terminar(mensaje) {
+  const input = document.getElementById("guess-input");
+  const button = document.getElementById("guess-button");
+  input.disabled = true;
+  button.disabled = true;
 
-      // Ocultar mensaje de error si se mostraba
-      document.getElementById('error').style.display = 'none';
-  }
-});
+  let contenedor = document.getElementById('guesses');
+  contenedor.innerHTML = mensaje;
+}
+
