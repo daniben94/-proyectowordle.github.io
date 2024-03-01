@@ -1,85 +1,50 @@
-// script.js
-
-// Variables globales
-let intentos = 6;
-let diccionario = ['APPLE', 'HURLS', 'WINGS', 'YOUTH'];
-let palabra = "";
-
-// Evento load
-window.addEventListener('load', init);
-
-// Evento click
-const button = document.getElementById("guess-button");
-button.addEventListener("click", intentar);
-
-function init() {
-  // Selección de palabra aleatoria
-  palabra = diccionario[Math.floor(Math.random() * diccionario.length)];
-
-  // Inicializar la interfaz de usuario
-  renderUI();
+body {
+  font-family: Arial, sans-serif;
 }
 
-function intentar() {
-  const intento = leerIntento();
-
-  if (intento === palabra) {
-    terminar("<h1>¡GANASTE! 😄</h1>");
-    return;
-  }
-
-  renderIntento(intento);
-
-  intentos--;
-
-  if (intentos === 0) {
-    terminar("<h1>¡PERDISTE! 😢</h1>");
-  }
+h1 {
+  text-align: center;
+  margin-top: 50px;
 }
 
-function leerIntento() {
-  let intento = document.getElementById("guess-input").value;
-  intento = intento.toUpperCase();
-  return intento;
+#guess-input {
+  display: block;
+  margin: 0 auto 20px;
+  padding: 10px;
+  font-size: 18px;
+  width: 250px;
+  border: 1px solid #ccc;
 }
 
-function renderIntento(intento) {
-  const grid = document.getElementById("grid");
-  const row = document.createElement('div');
-  row.className = 'row';
-
-  for (let i = 0; i < palabra.length; i++) {
-    const span = document.createElement('span');
-    span.className = 'letter';
-
-    if (intento[i] === palabra[i]) {
-      span.innerHTML = intento[i];
-      span.style.backgroundColor = '#79b851'; // Verde
-    } else if (palabra.includes(intento[i])) {
-      span.innerHTML = intento[i];
-      span.style.backgroundColor = '#f3c237'; // Amarillo
-    } else {
-      span.innerHTML = intento[i];
-      span.style.backgroundColor = '#a4aec4'; // Gris
-    }
-
-    row.appendChild(span);
-  }
-
-  grid.appendChild(row);
+#guess-button {
+  display: block;
+  margin: 0 auto;
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #0CBABA;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
 }
 
-function renderUI() {
-  // Puedes agregar aquí cualquier inicialización de la interfaz de usuario si es necesario.
+button:active {
+  transform: scale(0.95);
 }
 
-function terminar(mensaje) {
-  const input = document.getElementById("guess-input");
-  const button = document.getElementById("guess-button");
-  input.disabled = true;
-  button.disabled = true;
+.letter {
+  border: 1px solid black;
+  padding: 3px;
+  margin: 3px;
+  min-width: 20px;
+  text-align: center;
+  display: inline-block;
+}
 
-  let contenedor = document.getElementById('guesses');
-  contenedor.innerHTML = mensaje;
+.row {
+  margin-bottom: 10px;
+}
+
+.input-area {
+  margin: 30px;
 }
 
